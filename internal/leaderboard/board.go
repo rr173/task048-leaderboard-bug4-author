@@ -130,6 +130,7 @@ func (b *Board) Player(id string) (Entry, error) {
 // desc, reach time asc, id asc) with competition ranks assigned. The returned
 // slice is a fresh copy and may be modified freely.
 func (b *Board) ranked() []Entry {
+	b.mu.Lock()
 	var es []Entry
 	for _, p := range b.players {
 		es = append(es, Entry{
@@ -138,6 +139,7 @@ func (b *Board) ranked() []Entry {
 			BestTs:    p.bestTs,
 		})
 	}
+	b.mu.Unlock()
 	sort.Slice(es, func(i, j int) bool {
 		if es[i].BestScore != es[j].BestScore {
 			return es[i].BestScore > es[j].BestScore
